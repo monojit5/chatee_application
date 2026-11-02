@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import toast from "react-hot-toast";
-import api from "../api";
+import api, { API_BASE_URL } from "../api";
 import userContext from "./Usercontext";
 import { ChatContext } from "./Chatcontext";
 
@@ -127,7 +127,7 @@ export function Chatprovider({ children }) {
   useEffect(() => {
     if (!authToken || !currentUser) return undefined;
 
-    const socket = io(api.defaults.baseURL, { auth: { token: authToken } });
+    const socket = io(API_BASE_URL, { auth: { token: authToken } });
     socketRef.current = socket;
     setCallSocket(socket);
 

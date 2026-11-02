@@ -1,13 +1,15 @@
 import axios from "axios";
 
+export const API_BASE_URL = "https://chatee-application.onrender.com";
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
+  baseURL: API_BASE_URL,
 });
 
 export const getAssetUrl = (value) => {
   if (!value) return "";
   if (/^(https?:|data:|blob:)/i.test(value)) return value;
-  return new URL(value, api.defaults.baseURL).toString();
+  return new URL(value, API_BASE_URL).toString();
 };
 
 api.interceptors.request.use((config) => {

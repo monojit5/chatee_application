@@ -4,7 +4,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import userContext from '../context/Usercontext'
 import ThemeToggle from '../components/ThemeToggle'
-import api from '../api'
+import { API_BASE_URL } from '../api'
 
 const entrance = {
   hidden: { opacity: 0, y: 14 },
@@ -286,7 +286,7 @@ export default function Login() {
               <motion.button
                 variants={entrance}
                 type="button"
-                onClick={() => window.location.assign(`${api.defaults.baseURL}/user/google`)}
+                onClick={() => window.location.assign(`${API_BASE_URL}/user/google`)}
                 whileHover={reduceMotion ? undefined : { y: -1 }}
                 whileTap={reduceMotion ? undefined : { scale: 0.99 }}
                 className="flex h-12 w-full items-center justify-center gap-2.5 rounded-xl border border-white/[0.11] bg-white/[0.025] text-[13px] font-medium text-slate-200 outline-none transition-colors hover:border-white/20 hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-indigo-300"
