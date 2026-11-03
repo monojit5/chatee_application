@@ -2,6 +2,25 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Camera, CameraOff, Mic, MicOff, PhoneOff, Video, X } from "lucide-react";
 import { getAssetUrl } from "../api";
 
+// STUN works for most home networks; mobile/corporate networks often need a
+// TURN relay. Configure one with VITE_TURN_URLS (comma-separated),
+// VITE_TURN_USERNAME and VITE_TURN_CREDENTIAL at build time.
+const ICE_SERVERS = (() => {
+  const servers = [
+    { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
+  ];
+  const turnUrls = (import.meta.env.VITE_TURN_URLS || "")
+    .split(",").map((url) => url.trim()).filter(Boolean);
+  if (turnUrls.length) {
+    servers.push({
+      urls: turnUrls,
+      username: import.meta.env.VITE_TURN_USERNAME || undefined,
+      credential: import.meta.env.VITE_TURN_CREDENTIAL || undefined,
+    });
+  }
+  return servers;
+})();
+
 function getCameraError(error) {
   if (error?.name === "NotAllowedError" || error?.name === "PermissionDeniedError") {
     return "Camera or microphone permission was denied. Allow access in your browser and try again.";
@@ -74,12 +93,7 @@ export default function VideoCall({ chat, callType = "video", socket, incomingCa
   }, [callType]);
 
   const createPeerConnection = useCallback(() => {
-    const connection = new RTCPeerConnection({
-      iceServers: [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" },
-      ],
-    });
+    const connection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
     localStreamRef.current?.getTracks().forEach((track) => {
       connection.addTrack(track, localStreamRef.current);
     });
